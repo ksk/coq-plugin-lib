@@ -5,7 +5,7 @@
  *)
 
 open Stdlib
-open Map
+(* open Map *)
 open Util
 open Environ
 open Constr
@@ -18,7 +18,7 @@ open Substitution
 open Stateutils
 open Recordops
 open Record
-open Printing
+(* open Printing *)
 
 (* Type-sensitive transformation of terms *)
 type constr_transformer = env -> evar_map -> constr -> evar_map * constr
@@ -57,7 +57,7 @@ let transform_constant ident tr_constr const_body =
   let sigma = Evd.from_env env in
   let sigma, term' = tr_constr env sigma term in
   let sigma, type' = tr_constr env sigma const_body.const_type in
-  let open Printing in
+  (* let open Printing in *)
   sigma, Globnames.destConstRef (define_term ~typ:type' ident sigma term' true)
 
 (*
@@ -139,7 +139,7 @@ let transform_module_structure env ?(init=const GlobRef.Map.empty) ?(opaques=Glo
         match b with
         | SFBconst const_body ->
            let const = Constant.make2 mod_path l in
-           not (GlobRef.Set.mem (ConstRef const) opaques)
+           not (GlobRef.Set.mem (GlobRef.ConstRef const) opaques)
         | _ ->
            true)
       mod_elems

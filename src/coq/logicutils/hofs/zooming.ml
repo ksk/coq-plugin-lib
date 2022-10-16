@@ -3,6 +3,7 @@
  *)
 
 open Constr
+open Context
 open Environ
 open Apputils
 open Funutils

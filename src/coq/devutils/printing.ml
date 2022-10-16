@@ -61,8 +61,9 @@ let universe_as_string u =
 (* Gets a sort as a string *)
 let sort_as_string s =
   match s with
-  | Term.Prop _ -> if s = Sorts.prop then "Prop" else "Set"
+  | Term.Prop -> if s = Sorts.prop then "Prop" else "Set"
   | Term.Type u -> Printf.sprintf "Type %s" (universe_as_string u)
+  | _ -> invalid_arg "sort_as_string"
 
 (* Prints a term *)
 let rec term_as_string (env : env) (trm : types) =
@@ -158,6 +159,7 @@ let rec term_as_string (env : env) (trm : types) =
      Printf.sprintf "(%s)" (print_to_string print_constr trm)
   | Proj (p, c) -> (* TODO *)
      Printf.sprintf "(%s)" (print_to_string print_constr trm)
+  | _ -> invalid_arg "term_as_string"
 
 (* Debug a term *)
 let debug_term (env : env) (trm : types) (descriptor : string) : unit =
@@ -182,7 +184,7 @@ let env_as_string (env : env) : string =
          let (n, b, t) = CRD.to_tuple @@ lookup_rel i env in
          Printf.sprintf
            "%s (Rel %d): %s"
-           (name_as_string n.binder_name)
+           (name_as_string n.Context.binder_name)
            i
            (term_as_string (pop_rel_context i env) t))
        all_relis)

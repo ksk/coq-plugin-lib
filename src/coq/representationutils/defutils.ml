@@ -13,7 +13,6 @@ open Constrextern
 
 TODO do we need to return the updated evar_map? *)
 let edeclare ident poly ~opaque sigma udecl body tyopt imps hook refresh =
-  let open EConstr in
   (* XXX: "Standard" term construction combinators such as `mkApp`
      don't add any universe constraints that may be needed later for
      the kernel to check that the term is correct.
@@ -85,7 +84,7 @@ let extern env sigma t : constr_expr =
   Constrextern.extern_constr true env sigma (EConstr.of_constr t)
 
 (* Construct the external expression for a definition *)
-let expr_of_global (g : Globnames.global_reference) : constr_expr =
+let expr_of_global (g : Names.GlobRef.t) : constr_expr =
   let r = extern_reference Id.Set.empty g in
   CAst.make @@ (CAppExpl ((None, r, None), []))
 
@@ -93,7 +92,7 @@ let expr_of_global (g : Globnames.global_reference) : constr_expr =
 let pglobal_of_constr term =
   let open Constr in 
     match Constr.kind term with
-    | Const (const, univs) -> Globnames.ConstRef const, univs
+    | Const (const, univs) -> Names.GlobRef.ConstRef const, univs
     | Ind (ind, univs) ->  Names.GlobRef.IndRef ind, univs
     | Construct (cons, univs) -> Names.GlobRef.ConstructRef cons, univs
     | Var id -> Names.GlobRef.VarRef id, Univ.Instance.empty
@@ -102,7 +101,7 @@ let pglobal_of_constr term =
 (* Convert a global reference with universes into a term *)
 let constr_of_pglobal (glob, univs) =
   match glob with
-  | Globnames.ConstRef const -> Constr.mkConstU (const, univs)
+  | Names.GlobRef.ConstRef const -> Constr.mkConstU (const, univs)
   | Names.GlobRef.IndRef ind -> Constr.mkIndU (ind, univs)
   | Names.GlobRef.ConstructRef cons -> Constr.mkConstructU (cons, univs)
   | Names.GlobRef.VarRef id -> Constr.mkVar id

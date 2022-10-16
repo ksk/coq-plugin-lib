@@ -106,6 +106,7 @@ let fold_constr_with_binders g f n acc c =
       let n' = CArray.fold_left2 (fun c n t -> g c) n lna tl in
       let fd = Array.map2 (fun t b -> (t,b)) tl bl in
       Array.fold_left (fun acc (t,b) -> f n' (f n acc t) b) acc fd
+  | _ -> invalid_arg "fold_constr_with_binders"
 
 (*
  * Gather the set of relative (de Bruijn) variables occurring in the term that

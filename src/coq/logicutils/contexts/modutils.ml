@@ -1,6 +1,6 @@
 open Util
 open Names
-open Globnames
+(* open Globnames *)
 open Declarations
 open Indutils
 
@@ -56,7 +56,7 @@ let fold_module_structure_by_decl init fold_const fold_ind mod_body =
     match mod_elem with
     | SFBconst const_body ->
       let const = Constant.make2 mod_path label in
-      if Names.GlobRef.Set.mem (ConstRef const) globset then
+      if Names.GlobRef.Set.mem (Names.GlobRef.ConstRef const) globset then
         (globset, acc)
       else
         (globset, fold_const acc const const_body)
@@ -88,8 +88,8 @@ let fold_module_structure_by_decl init fold_const fold_ind mod_body =
 let fold_module_structure_by_glob init fold_global mod_body =
   fold_module_structure_by_decl
     init
-    (fun acc const _ -> fold_global acc (ConstRef const))
-    (fun acc ind _ -> fold_global acc (IndRef ind))
+    (fun acc const _ -> fold_global acc (Names.GlobRef.ConstRef const))
+    (fun acc ind _ -> fold_global acc (Names.GlobRef.IndRef ind))
     mod_body
 
 (*

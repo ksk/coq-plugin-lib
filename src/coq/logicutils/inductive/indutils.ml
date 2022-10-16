@@ -5,6 +5,7 @@
 open Util
 open Environ
 open Constr
+open Context
 open Names
 open Utilities
 open Declarations
@@ -15,8 +16,8 @@ open Envutils
 open Contextutils
 open Inference
 open Evd
-open Entries
-open DeclareInd
+(* open Entries *)
+(* open DeclareInd *)
 
 (* Don't support mutually inductive or coinductive types yet (TODO move) *)
 let check_inductive_supported mutind_body : unit =
@@ -80,7 +81,7 @@ let is_elim (env : env) (trm : types) =
 
 (* Lookup the eliminator over the type sort *)
 let type_eliminator (env : env) (ind : inductive) =
-  UnivGen.constr_of_monomorphic_global (Indrec.lookup_eliminator env ind InType)
+  UnivGen.constr_of_monomorphic_global (Indrec.lookup_eliminator env ind Sorts.InType)
   (* TODO: Does this need to support polymorphic (and not just monomorphic)?
      E.g.: Evd.fresh_global env (Evd.from_env env) (Indrec.lookup_eliminator env ind InType) 
    *)
@@ -165,9 +166,11 @@ let make_ind_local_entry decl =
 *)
 
 (* Instantiate an abstract universe context *)
+(* 
 let inst_abs_univ_ctx abs_univ_ctx =
   (* Note that we're creating *globally* fresh universe levels. *)
    UnivGen.fresh_instance abs_univ_ctx
+*)
 
 (* Instantiate an abstract_inductive_universes into an Entries.inductive_universes with Univ.UContext.t (TODO do we do something with evar_map here?) *)
 let make_ind_univs_entry = function

@@ -39,7 +39,7 @@ let run_tac env sigma (tac : unit Proofview.tactic) (goal : constr)
   let p = Proof.start ~name:(destVar goal) ~poly:true sigma [(env, EConstr.of_constr goal)] in
   let (p', _, _) = Proof.run_tactic env tac p in
   let compact_p = Proof.data p' in
-  (compact_p.goals, compact_p.sigma)
+  (compact_p.Proof.goals, compact_p.Proof.sigma)
 
 (* Returns true if the given tactic solves the goal. *)
 let solves env sigma (tac : unit Proofview.tactic) (goal : constr) : bool state =
@@ -217,7 +217,8 @@ let rec intros_revert (t : tactical) : tactical =
 (* Combine common subgoal tactics into semicolons. *)
 let rec semicolons sigma (t : tactical) : tactical =
   let first t = match t with
-    | Compose ( [ tac ], _) -> tac in
+    | Compose ( [ tac ], _) -> tac 
+    | _ -> invalid_arg "semicolons.first" in
   let subgoals t = match t with
     | Compose ( _, goals) -> goals in
   match t with
@@ -434,7 +435,7 @@ and symmetry (f, args) (env, sigma, opts) : tactical option =
 and exists (f, args) (env, sigma, opts) : tactical option =
   guard (equal f Sigmautils.existT) >>= fun _ ->
   let exT = Sigmautils.dest_existT (mkApp (f, args)) in
-  dot (Exists (env, exT.index)) (first_pass env sigma opts exT.unpacked)
+  dot (Exists (env, exT.Sigmautils.index)) (first_pass env sigma opts exT.Sigmautils.unpacked)
   
 (* Value must be a rewrite on a hypothesis in context. *)
 and rewrite_in (_, valu, _, body) (env, sigma, opts) : tactical option =
@@ -476,7 +477,7 @@ and apply_in (n, valu, typ, body) (env, sigma, opts) : tactical option =
     
 (* Last resort decompile let-in as a pose.  *)
 and pose (n, valu, t, body) (env, sigma, opts) : tactical option =
-  let n' = fresh_name env n.binder_name in
+  let n' = fresh_name env n.Context.binder_name in
   let env' = push_let_in (Name n', valu, t) env in
   let decomp_body = first_pass env' sigma opts body in
   (* If the binding is NEVER used, just skip this. *)
@@ -502,7 +503,8 @@ let bullet level =
   let blt = match level mod 3 with
     | 0 -> '*'
     | 1 -> '-'
-    | 2 -> '+' in
+    | 2 -> '+' 
+    | _ -> invalid_arg "bullet" in
   str (String.make num blt) ++ str " "
   
 (* Concatenate list of pp.t with separator *)

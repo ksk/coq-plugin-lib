@@ -6,13 +6,12 @@ open Utilities
 open Environ
 open Constr
 open Declarations
+open Contextutils
 open Evd
 open Names
 open Nameutils
 open Stateutils
-
-open Contextutils
-
+   
 (* Look up all indexes from is in env *)
 let lookup_rels (is : int list) (env : env) : rel_declaration list =
  List.map (fun i -> lookup_rel i env) is
@@ -32,8 +31,8 @@ let lookup_all_rels (env : env) : rel_declaration list =
 (* Return a name-type pair from the given rel_declaration. *)
 let rel_name_type rel : Name.t * types =
   match rel with
-  | CRD.LocalAssum (n, t) -> (n.binder_name, t)
-  | CRD.LocalDef (n, _, t) -> (n.binder_name, t)
+  | CRD.LocalAssum (n, t) -> (n.Context.binder_name, t)
+  | CRD.LocalDef (n, _, t) -> (n.Context.binder_name, t)
 
 
 (* Push a local binding to an environment *)

@@ -55,9 +55,10 @@ let apply_pair (app : pair_app) =
  * Deconsruct a sigT type from a type
  *)
 let dest_pair (trm : constr) =
-  let [typ1; typ2; trm1; trm2] = unfold_args trm in
-  { typ1; typ2; trm1; trm2 }
-          
+  match unfold_args trm with
+    [typ1; typ2; trm1; trm2] -> { typ1; typ2; trm1; trm2 }
+  | _ -> invalid_arg "dest_pair"
+         
 (*
  * An application of prod
  *)
@@ -77,8 +78,9 @@ let apply_prod (app : prod_app) : types =
  * Deconstruct a prod
  *)
 let dest_prod (trm : types) : prod_app =
-  let [typ1; typ2] = unfold_args trm in
-  { typ1; typ2 }
+  match unfold_args trm with
+    [typ1; typ2] -> { typ1; typ2 }
+  | _ -> invalid_arg "dest_prod"
 
 (*
  * An application of prod_rect
@@ -106,9 +108,11 @@ let elim_prod (app : prod_elim) =
  * Deconstruct an application of prod
  *)
 let dest_prod_elim (trm : constr) =
-  let [typ1; typ2; p; proof; arg] = unfold_args trm in
-  let to_elim = { typ1; typ2 } in
-  { to_elim; p; proof; arg }
+  match unfold_args trm with
+    [typ1; typ2; p; proof; arg] ->
+      let to_elim = { typ1; typ2 } in
+      { to_elim; p; proof; arg }
+  | _ -> invalid_arg "dest_prod_elim"
 
 (*
  * First projection of a prod

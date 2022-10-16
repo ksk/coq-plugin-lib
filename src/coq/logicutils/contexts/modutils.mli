@@ -33,10 +33,13 @@ val fold_module_structure_by_decl : 'a -> ('a -> Names.Constant.t -> Opaqueproof
  * accepting a global reference.
  *)
 (* val fold_module_structure_by_glob : 'a -> ('a -> evaluable_global_reference -> 'a) -> module_body -> 'a *)
+(*
 val fold_module_structure_by_glob : 'a -> ('a -> Names.evaluable_global_reference -> 'a) -> Declarations.module_body -> 'a
+*)
 
 (*
  * Same as `fold_module_structure_by_glob` except an implicit unit accumulator.
  *)
-val iter_module_structure_by_glob : (Globnames.global_reference -> unit) -> 'a Declarations.generic_module_body -> unit
-val fold_module_structure_by_glob : 'a -> ('a -> Globnames.global_reference -> 'a) -> 'b Declarations.generic_module_body -> 'a
+val iter_module_structure_by_glob : (Names.GlobRef.t -> unit) -> 'a Declarations.generic_module_body -> unit
+
+val fold_module_structure_by_glob : 'a -> ('a -> Names.GlobRef.t -> 'a) -> 'b Declarations.generic_module_body -> 'a

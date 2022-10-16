@@ -55,8 +55,9 @@ let pack_existT (app : existT_app) : types =
  * Deconstruct an existT term
  *)
 let dest_existT (trm : types) : existT_app =
-  let [index_type; packer; index; unpacked] = unfold_args trm in
-  { index_type; packer; index; unpacked }
+  match unfold_args trm with 
+    [index_type; packer; index; unpacked] -> { index_type; packer; index; unpacked }
+  | _ -> invalid_arg "dest_existT"
 
 (*
  * An application of sigT
@@ -77,8 +78,9 @@ let pack_sigT (app : sigT_app) =
  * Deconsruct a sigT type from a type
  *)
 let dest_sigT (typ : types) =
-  let [index_type; packer] = unfold_args typ in
-  { index_type; packer }
+  match unfold_args typ with
+    [index_type; packer] -> { index_type; packer }
+  | _ -> invalid_arg "dest_sigT"
 
 (*
  * Build the eta-expansion of a term known to have a sigma type.
@@ -116,9 +118,11 @@ let elim_sigT (app : sigT_elim) =
  * Deconstruct an application of sigT_rect
  *)
 let dest_sigT_elim (trm : types) =
-  let [index_type; packer; packed_type; unpacked; arg] = unfold_args trm in
-  let to_elim = { index_type ; packer } in
-  { to_elim; packed_type; unpacked; arg }
+  match unfold_args trm with
+    [index_type; packer; packed_type; unpacked; arg] -> 
+      let to_elim = { index_type ; packer } in
+      { to_elim; packed_type; unpacked; arg }
+  | _ -> invalid_arg "dest_sigT_elim"
 
 (*
  * Left projection of a sigma type

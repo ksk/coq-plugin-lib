@@ -7,7 +7,7 @@ open Names
 open Evd
 open Environ
 open Constrexpr
-open Globnames
+(* open Globnames *)
 
 (* --- Defining Coq terms --- *)
 
@@ -17,13 +17,13 @@ open Globnames
  * (Refreshing universes is REALLY costly)
  *)
 val define_term :
-  ?typ:types -> Id.t -> evar_map -> types -> bool -> global_reference
+  ?typ:types -> Id.t -> evar_map -> types -> bool -> Names.GlobRef.t
 
 (*
  * Like define_term, but for a canonical structure
  *)
 val define_canonical :
-  ?typ:types -> Id.t -> evar_map -> types -> bool -> global_reference
+  ?typ:types -> Id.t -> evar_map -> types -> bool -> Names.GlobRef.t
 
 (* --- Converting between representations --- *)
 
@@ -37,9 +37,9 @@ val define_canonical :
  *
  * The external representation is constr_expr.
  *
- * References to definitions are represented by the global_reference type.
+ * References to definitions are represented by the Names.GlobRef.t type.
  * Note that this is what the define_term and define_canonical functions
- * above return. The type global_reference Univ.puniverses additionally 
+ * above return. The type Names.GlobRef.t Univ.puniverses additionally 
  * stores universes.
  *)
 
@@ -56,19 +56,19 @@ val extern : env -> evar_map -> types -> constr_expr
 (* 
  * Construct the external expression for a definition.
  *)
-val expr_of_global : global_reference -> constr_expr
+val expr_of_global : Names.GlobRef.t -> constr_expr
 
 (*
  * Convert a term into a global reference with universes (or raise Not_found) 
  *)
-val pglobal_of_constr : constr -> global_reference Univ.puniverses
+val pglobal_of_constr : constr -> Names.GlobRef.t Univ.puniverses
 
 (* 
  * Convert a global reference with universes into a term
  *)
-val constr_of_pglobal : global_reference Univ.puniverses -> constr
+val constr_of_pglobal : Names.GlobRef.t Univ.puniverses -> constr
 
 (*
  * Safely instantiate a global reference, updating the evar map
  *)
-val new_global : evar_map -> global_reference -> evar_map * constr
+val new_global : evar_map -> Names.GlobRef.t -> evar_map * constr

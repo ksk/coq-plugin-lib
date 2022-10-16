@@ -44,7 +44,7 @@ val named_defin : Id.t * 'constr * 'types -> ('constr, 'types) CND.pt
 *)
 
 (* Context name/decl manipulation *)
-val get_rel_ctx_name : Names.name -> Names.Name.t Context.binder_annot
+val get_rel_ctx_name : Name.t -> Names.Name.t Context.binder_annot
 
 val get_rel_ctx : ('constr, 'types) CRD.pt -> Names.Name.t Context.binder_annot
 
@@ -143,7 +143,7 @@ val bindings_for_inductive :
   env -> mutual_inductive_body -> one_inductive_body array -> rel_declaration list
 
 val bindings_for_fix :
-  name array -> types array -> rel_declaration list
+  Name.t array -> types array -> rel_declaration list
 
 (* --- Combining contexts --- *) 
 
